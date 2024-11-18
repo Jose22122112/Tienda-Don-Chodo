@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Ferreteria DON CHODO</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5a623, #f56b23);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            width: 350px;
+            max-width: 100%;
+            padding: 2rem;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-header h1 {
+            color: #f5a623;
+            margin: 0;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 1rem;
+            border: none;
+            border-bottom: 2px solid #f5a623;
+            background-color: transparent;
+            transition: border-color 0.3s;
+        }
+        .login-form input:focus {
+            outline: none;
+            border-color: #f56b23;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #f5a623;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .login-form button:hover {
+            background-color: #f56b23;
+        }
+        .login-footer {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .login-footer a {
+            color: #f5a623;
+            text-decoration: none;
+        }
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="tool-icon">🔧</div>
+            <h1>Ferreteria DON CHODO</h1>
+        </div>
+        <form class="login-form">
+            <input type="email" placeholder="Correo electrónico" required>
+            <input type="password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        <div class="login-footer">
+            <p>¿No tienes una cuenta? <a href="register.html">Regístrate</a></p>
+            <p><a href="#">¿Olvidaste tu contraseña?</a></p>
+        </div>
+    </div>
+</body>
+</html>

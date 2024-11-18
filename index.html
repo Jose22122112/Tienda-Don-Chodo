@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferretería DON CHODO</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        header {
+            background-color: #343a40;
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        header .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ffa500;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        nav ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+        }
+        nav ul li {
+            margin-left: 2rem;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+        }
+        .cart-icon {
+            cursor: pointer;
+            position: relative;
+            font-size: 1.5rem;
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ffa500;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 0.9rem;
+        }
+        
+        /* Category Bar */
+        .categories {
+            background-color: #007bff;
+            padding: 1rem 0;
+        }
+        .categories ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .categories ul li {
+            margin: 0 1rem;
+        }
+        .categories ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
+        
+        /* Product Grid */
+        main {
+            padding: 3rem 0;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .product-card {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .product-card h3 {
+            padding: 1rem;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+        .product-card button {
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            background-color: #ffa500;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 0 8px 8px;
+            font-size: 1.1rem;
+        }
+        .product-card button:hover {
+            background-color: #e68a00;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #343a40;
+            color: white;
+            padding: 3rem 2rem;
+        }
+        footer .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        footer h3 {
+            margin-bottom: 1rem;
+        }
+        footer .social-icons a {
+            color: white;
+            font-size: 2rem;
+            margin-right: 1rem;
+        }
+
+        /* Cart Modal */
+        #cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .cart-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ccc;
+        }
+        .cart-item button {
+            background-color: #ff4d4d;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border: none;
+            cursor: pointer;
+        }
+        .cart-item button:hover {
+            background-color: #ff3333;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">Ferretería DON CHODO</div>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar productos...">
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="login.html">Iniciar sesión</a></li>
+                    <li><a href="register.html">Registrar</a></li>
+                    <li><a href="#">Mi cuenta</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon" id="cart-icon" onclick="showCart()">
+                🛒
+                <span class="cart-count" id="cart-count">0</span>
+            </div>
+        </div>
+    </header>
+
+    <nav class="categories">
+        <div class="container">
+            <ul>
+                <li><a href="#">Marcas</a></li>
+                <li><a href="#">Herramientas</a></li>
+                <li><a href="#">Electricidad</a></li>
+                <li><a href="#">Plomería</a></li>
+                <li><a href="#">Pintura</a></li>
+                <li><a href="#">Jardín</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h2>Productos Destacados</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="Img/Electricas 1.jpg" alt="Herramientas Eléctricas">
+                <h3>Herramientas Eléctricas</h3>
+                <button onclick="addToCart('Herramientas Eléctricas', 99.99)">Agregar al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="Img/Manuales 1.jpg" alt="Herramientas Manuales">
+                <h3>Herramientas Manuales</h3>
+                <button onclick="addToCart('Herramientas Manuales', 49.99)">Agregar al carrito</button>
+            </div>
+            <div class="product-card">
+                <img src="Img/Iluminación.avif" alt="Iluminación">
+                <h3>Iluminación</h3>
+                <button onclick="addToCart('Iluminación', 29.99)">Agregar al carrito</button>
+            </div>
+            <!-- Agregar más productos aquí -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div>
+                <h3>Contacto</h3>
+                <p>Dirección: Calle Principal 123</p>
+                <p>Teléfono: (123) 456-7890</p>
+                <p>Email: info@donchodo.com</p>
+            </div>
+            <div>
+                <h3>Enlaces rápidos</h3>
+                <ul>
+                    <li><a href="#">Sobre nosotros</a></li>
+                    <li><a href="#">Términos y condiciones</a></li>
+                    <li><a href="#">Política de privacidad</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3>Síguenos</h3>
+                <div class="social-icons">
+                    <a href="#">📘</a>
+                    <a href="#">🐦</a>
+                    <a href="#">📷</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal de carrito -->
+    <div id="cart-modal">
+        <div class="cart-content">
+            <h2>Carrito de Compras</h2>
+            <div id="cart-items"></div>
+            <p>Total: $<span id="cart-total">0.00</span></p>
+            <button onclick="closeCart()">Cerrar</button>
+            <button onclick="checkout()">Pagar</button>
+        </div>
+    </div>
+
+    <script>
+        let cart = [];
+        let cartTotal = 0;
+
+        function addToCart(product, price) {
+            cart.push({ product, price });
+            cartTotal += price;
+            updateCartCount();
+        }
+
+        function updateCartCount() {
+            const cartCount = document.getElementById('cart-count');
+            cartCount.textContent = cart.length;
+        }
+
+        function showCart() {
+            const cartModal = document.getElementById('cart-modal');
+            const cartItems = document.getElementById('cart-items');
+            const cartTotalElement = document.getElementById('cart-total');
+
+            cartItems.innerHTML = '';
+            cart.forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'cart-item';
+                itemElement.innerHTML = `
+                    <span>${item.product}</span>
+                    <span>$${item.price.toFixed(2)}</span>
+                    <button onclick="removeFromCart(${index})">Eliminar</button>
+                `;
+                cartItems.appendChild(itemElement);
+            });
+
+            cartTotalElement.textContent = cartTotal.toFixed(2);
+            cartModal.style.display = 'flex';
+        }
+
+        function closeCart() {
+            const cartModal = document.getElementById('cart-modal');
+            cartModal.style.display = 'none';
+        }
+
+        function removeFromCart(index) {
+            cartTotal -= cart[index].price;
+            cart.splice(index, 1);
+            updateCartCount();
+            showCart();
+        }
+
+        function checkout() {
+            alert('¡Gracias por tu compra!');
+            cart = [];
+            cartTotal = 0;
+            updateCartCount();
+            closeCart();
+        }
+    </script>
+</body>
+</html>

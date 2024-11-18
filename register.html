@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - Ferreteria DON CHODO</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f56b23, #f5a623);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .register-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            width: 400px;
+            max-width: 100%;
+            padding: 2rem;
+        }
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .register-header h1 {
+            color: #f56b23;
+            margin: 0;
+        }
+        .register-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 1rem;
+            border: none;
+            border-bottom: 2px solid #f56b23;
+            background-color: transparent;
+            transition: border-color 0.3s;
+        }
+        .register-form input:focus {
+            outline: none;
+            border-color: #f5a623;
+        }
+        .register-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #f56b23;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .register-form button:hover {
+            background-color: #f5a623;
+        }
+        .register-footer {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .register-footer a {
+            color: #f56b23;
+            text-decoration: none;
+        }
+        .register-footer a:hover {
+            text-decoration: underline;
+        }
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <div class="tool-icon">🛠️</div>
+            <h1>Únete a DON CHODO</h1>
+        </div>
+        <form class="register-form">
+            <input type="text" placeholder="Nombre completo" required>
+            <input type="email" placeholder="Correo electrónico" required>
+            <input type="password" placeholder="Contraseña" required>
+            <input type="password" placeholder="Confirmar contraseña" required>
+            <button type="submit">Crear Cuenta</button>
+        </form>
+        <div class="register-footer">
+            <p>¿Ya tienes una cuenta? <a href="login.html">Inicia sesión</a></p>
+        </div>
+    </div>
+</body>
+</html>
