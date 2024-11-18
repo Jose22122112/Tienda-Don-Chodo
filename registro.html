@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión - Ferreteria DON CHODO</title>
+    <title>Registro - Ferreteria DON CHODO</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -15,7 +15,7 @@
             justify-content: center;
             align-items: center;
         }
-        .login-container {
+        .register-container {
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
@@ -24,15 +24,15 @@
             max-width: 100%;
             padding: 2rem;
         }
-        .login-header {
+        .register-header {
             text-align: center;
             margin-bottom: 2rem;
         }
-        .login-header h1 {
+        .register-header h1 {
             color: #f56b23;
             margin: 0;
         }
-        .login-form input {
+        .register-form input {
             width: 100%;
             padding: 10px;
             margin-bottom: 1rem;
@@ -41,11 +41,11 @@
             background-color: transparent;
             transition: border-color 0.3s;
         }
-        .login-form input:focus {
+        .register-form input:focus {
             outline: none;
             border-color: #f5a623;
         }
-        .login-form button, .social-login button {
+        .register-form button, .social-login button {
             width: 100%;
             padding: 10px;
             background-color: #f56b23;
@@ -56,18 +56,18 @@
             transition: background-color 0.3s;
             margin-bottom: 1rem;
         }
-        .login-form button:hover, .social-login button:hover {
+        .register-form button:hover, .social-login button:hover {
             background-color: #f5a623;
         }
-        .login-footer, .social-login {
+        .register-footer, .social-login {
             text-align: center;
             margin-top: 1rem;
         }
-        .login-footer a, .social-login a {
+        .register-footer a, .social-login a {
             color: #f56b23;
             text-decoration: none;
         }
-        .login-footer a:hover, .social-login a:hover {
+        .register-footer a:hover, .social-login a:hover {
             text-decoration: underline;
         }
         .tool-icon {
@@ -94,18 +94,20 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
+    <div class="register-container">
+        <div class="register-header">
             <div class="tool-icon">🛠️</div>
-            <h1>Iniciar Sesión en DON CHODO</h1>
+            <h1>Únete a DON CHODO</h1>
         </div>
-        <form class="login-form">
+        <form class="register-form">
+            <input type="text" placeholder="Nombre completo" required>
             <input type="email" placeholder="Correo electrónico" required>
             <input type="password" placeholder="Contraseña" required>
-            <button type="submit">Iniciar Sesión</button>
+            <input type="password" placeholder="Confirmar contraseña" required>
+            <button type="submit">Crear Cuenta</button>
         </form>
         <div class="social-login">
-            <p>O inicia sesión con</p>
+            <p>O regístrate con</p>
             <button onclick="loginWithGoogle()">
                 <img src="https://www.google.com/favicon.ico" alt="Google logo"> Google
             </button>
@@ -113,9 +115,8 @@
                 <img src="https://www.facebook.com/favicon.ico" alt="Facebook logo"> Facebook
             </button>
         </div>
-        <div class="login-footer">
-            <p>¿No tienes una cuenta? <a href="registro.html">Regístrate</a></p>
-            <p><a href="#">¿Olvidaste tu contraseña?</a></p>
+        <div class="register-footer">
+            <p>¿Ya tienes una cuenta? <a href="login.html">Inicia sesión</a></p>
         </div>
     </div>
     <script>
