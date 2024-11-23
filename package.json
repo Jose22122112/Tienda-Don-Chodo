@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "firebase": "^11.0.2",
+    "google-auth-library": "^9.15.0"
+  }
+}
