@@ -3,7 +3,10 @@
 <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <title>Ferreteria DON CHODO</title>
+            <link rel="stylesheet" href="style.css">
+</head>
             
     <style>
         body {
@@ -264,7 +267,7 @@
             </div>
             <div class="product-card">
                 <img src="Img/Tubos 1.jpg" alt="Tubos">
-                <h3>Jardinería</h3>
+                <h3>Tubos</h3>
                 <button onclick="addToCart('Tubos', 59.99)">Agregar al carrito</button>
             </div>
             
@@ -455,6 +458,72 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
+<script>
+    let cart = [];
+
+    // Función para agregar productos al carrito
+    function addToCart(product, price) {
+        cart.push({ product, price });
+        updateCart();
+        updateCartModal();
+    }
+
+    // Función para actualizar el conteo del carrito
+    function updateCart() {
+        document.getElementById('cart-count').textContent = cart.length;
+    }
+
+    // Función para abrir el modal del carrito
+    function openCart() {
+        document.getElementById('cart-modal').style.display = 'flex';
+        updateCartModal();
+    }
+
+    // Función para cerrar el modal del carrito
+    function closeCart() {
+        document.getElementById('cart-modal').style.display = 'none';
+    }
+
+    // Función para actualizar el contenido del modal del carrito
+    function updateCartModal() {
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cart-total');
+        cartItemsContainer.innerHTML = '';
+        let total = 0;
+
+        cart.forEach(item => {
+            const div = document.createElement('div');
+            div.classList.add('cart-item');
+            div.innerHTML = `
+                <span>${item.product} - $${item.price}</span>
+            `;
+            cartItemsContainer.appendChild(div);
+            total += item.price;
+        });
+
+        cartTotal.textContent = total.toFixed(2); // Mostrar el total
+    }
+
+    // Función para realizar el checkout
+    function checkout() {
+        if (cart.length === 0) {
+            alert("Tu carrito está vacío");
+            return;
+        }
+
+        let total = 0;
+        cart.forEach(item => total += item.price);
+        
+        alert(`Total a pagar: $${total.toFixed(2)}`);
+        cart = []; // Limpiar carrito después de la compra
+        updateCart(); // Actualizar la cantidad del carrito
+        closeCart(); // Cerrar el modal
+    }
+
+    // Añadir evento al icono del carrito para abrir el modal
+    document.getElementById('cart-icon').addEventListener('click', openCart);
+</script>
+
 
 </body>
 </html>
