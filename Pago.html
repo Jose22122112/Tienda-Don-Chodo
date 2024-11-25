@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DON CHODO - Ferretería</title>
+    <style>
+        /* ... Estilos anteriores ... */
+        .user-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #f56b23;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            z-index: 1000;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            color: #333;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #f5f5f5;
+        }
+
+        .header-nav {
+            background-color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-greeting {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .cart-icon {
+            position: relative;
+            margin-left: 20px;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #f56b23;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        /* Estilo para el ícono de carrito */
+        .cart-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .cart-button:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegación que se mostrará después del login -->
+    <nav id="headerNav" class="header-nav" style="display: none;">
+        <div class="logo">
+            <h2>DON CHODO</h2>
+        </div>
+        <div class="user-info">
+            <span class="user-greeting">Hola, <span id="userName">Usuario</span></span>
+            <div class="user-menu">
+                <div id="userAvatar" class="user-avatar">U</div>
+                <div id="dropdownMenu" class="dropdown-menu">
+                    <a href="#" onclick="navigateTo('mis-pedidos')">Mis pedidos</a>
+                    <a href="#" onclick="navigateTo('mis-direcciones')">Mis direcciones</a>
+                    <a href="#" onclick="logout()">Cerrar sesión</a>
+                </div>
+            </div>
+            <div class="cart-icon">
+                <button class="cart-button">
+                    🛒 Carrito
+                    <span class="cart-count">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenedor de login (se ocultará después de la autenticación) -->
+    <div id="loginContainer" class="login-container">
+        <!-- ... Resto del contenido del login ... -->
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDNrS_lhsr_vRdYYDoS0kpFwmdJepA7m_U",
+            authDomain: "tiendadonchodo.firebaseapp.com",
+            databaseURL: "https://tiendadonchodo-default-rtdb.firebaseio.com",
+            projectId: "tiendadonchodo",
+            storageBucket: "tiendadonchodo.firebasestorage.app",
+            messagingSenderId: "446103896045",
+            appId: "1:446103896045:web:8108dfd422b2a1f258b1e4",
+            measurementId: "G-DF86E2NKQ5"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        // Función para actualizar la UI basada en el estado de autenticación
+        function updateUI(user) {
+            const loginContainer = document.getElementById('loginContainer');
+            const headerNav = document.getElementById('headerNav');
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+
+            if (user) {
+                // Usuario autenticado
+                loginContainer.style.display = 'none';
+                headerNav.style.display = 'flex';
+                
+                // Obtener el primer nombre del usuario
+                const firstName = user.displayName.split(' ')[0];
+                
+                // Actualizar el saludo y el avatar
+                userName.textContent = firstName;
+                userAvatar.textContent = firstName.charAt(0).toUpperCase();
+                
+                // Guardar info del usuario en localStorage
+                localStorage.setItem('user', JSON.stringify({
+                    name: firstName,
+                    email: user.email,
+                    photoURL: user.photoURL
+                }));
+            } else {
+                // Usuario no autenticado
+                loginContainer.style.display = 'block';
+                headerNav.style.display = 'none';
+                localStorage.removeItem('user');
+            }
+        }
+
+        // Observador del estado de autenticación
+        onAuthStateChanged(auth, (user) => {
+            updateUI(user);
+        });
+
+        // Función de inicio de sesión con Google
+        window.handleGoogleSignIn = async function() {
+            try {
+                const provider = new GoogleAuthProvider();
+                const result = await signInWithPopup(auth, provider);
+                // La UI se actualizará automáticamente gracias al observer
+            } catch (error) {
+                console.error('Error al iniciar sesión:', error);
+                alert('Error al iniciar sesión: ' + error.message);
+            }
+        };
+
+        // Función de cierre de sesión
+        window.logout = async function() {
+            try {
+                await signOut(auth);
+                // La UI se actualizará automáticamente
+            } catch (error) {
+                console.error('Error al cerrar sesión:', error);
+            }
+        };
+
+        // Toggle del menú desplegable
+        const userAvatar = document.getElementById('userAvatar');
+        const dropdownMenu = document.getElementById('dropdownMenu');
+
+        userAvatar.addEventListener('click', () => {
+            dropdownMenu.classList.toggle('show');
+        });
+
+        // Cerrar el menú desplegable cuando se hace clic fuera
+        window.addEventListener('click', (event) => {
+            if (!event.target.matches('.user-avatar')) {
+                if (dropdownMenu.classList.contains('show')) {
+                    dropdownMenu.classList.remove('show');
+                }
+            }
+        });
+
+        // Función para navegar a diferentes secciones
+        window.navigateTo = function(section) {
+            console.log(`Navegando a: ${section}`);
+            // Aquí implementarías la navegación real
+        };
+    </script>
+</body>
+</html>

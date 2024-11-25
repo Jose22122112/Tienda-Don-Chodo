@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ferreteria DON CHODO</title>
+    <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Ferreteria DON CHODO</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -207,8 +209,8 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="Login1.Html">Iniciar sesión</a></li>
-                        <li><a href="registro.html">Registrar</a></li>
+                        <li><a href="Login1.Html">Iniciar sesión/Registrar</a></li>
+                      
                         <li><a href="#">Mi cuenta</a></li>
                     </ul>
                 </nav>
@@ -331,55 +333,71 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        let cart = [];
-        let cartTotal = 0;
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const isFirstLogin = urlParams.get('firstLogin');
+            const userFirstName = localStorage.getItem('userFirstName');
+            const userProfilePic = localStorage.getItem('userProfilePic') || 'https://via.placeholder.com/100';
+            const userEmail = localStorage.getItem('userEmail');
 
-        function addToCart(product, price) {
-            cart.push({ product, price });
-            cartTotal += price;
-            updateCartCount();
-        }
+            if (userFirstName) {
+                const loginSection = document.querySelector('nav ul');
+                loginSection.innerHTML = '';
 
-        function updateCartCount() {
-            const cartCount = document.getElementById('cart-count');
-            cartCount.textContent = cart.length;
-        }
+                const userContainer = document.createElement('li');
+                userContainer.style.display = 'flex';
+                userContainer.style.alignItems = 'center';
+                userContainer.style.gap = '10px';
 
-        function showCart() {
-            const cartModal = document.getElementById('cart-modal');
-            const cartItems = document.getElementById('cart-items');
-            const cartTotalElement = document.getElementById('cart-total');
+                const userInitial = document.createElement('span');
+                userInitial.textContent = userFirstName[0].toUpperCase();
+                userInitial.style.backgroundColor = '#ffa500';
+                userInitial.style.color = 'white';
+                userInitial.style.borderRadius = '50%';
+                userInitial.style.width = '30px';
+                userInitial.style.height = '30px';
+                userInitial.style.display = 'flex';
+                userInitial.style.justifyContent = 'center';
+                userInitial.style.alignItems = 'center';
+                userInitial.style.fontWeight = 'bold';
 
-            cartItems.innerHTML = '';
-            cart.forEach(item => {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'cart-item';
-                itemElement.innerHTML = `
-                    <span>${item.product}</span>
-                    <span>$${item.price.toFixed(2)}</span>
-                `;
-                cartItems.appendChild(itemElement);
-            });
+                const userLink = document.createElement('a');
+                userLink.href = '#';
+                userLink.textContent = userFirstName;
+                userLink.style.marginLeft = '10px';
 
-            cartTotalElement.textContent = cartTotal.toFixed(2);
-            cartModal.style.display = 'flex';
-        }
+                userContainer.appendChild(userInitial);
+                userContainer.appendChild(userLink);
+                loginSection.appendChild(userContainer);
 
-        function closeCart() {
-            const cartModal = document.getElementById('cart-modal');
-            cartModal.style.display = 'none';
-        }
+                if (isFirstLogin) {
+                    const saludes = [
+                        `🛠️ ¡Bienvenido a DON CHODO, ${userFirstName}! Tu destino para herramientas de primera.`,
+                        `🔧 ¡Hola ${userFirstName}! Prepárate para transformar tus ideas en realidad.`,
+                        `🏠 ${userFirstName}, estás en el mejor lugar para hacer realidad tus proyectos.`,
+                        `💡 ¡Qué bueno tenerte aquí, ${userFirstName}! Cada herramienta cuenta una historia.`
+                    ];
 
-        function checkout() {
-            alert('¡Gracias por tu compra!');
-            cart = [];
-            cartTotal = 0;
-            updateCartCount();
-            closeCart();
-        }
+                    const randomSaludo = saludes[Math.floor(Math.random() * saludes.length)];
 
-        document.getElementById('cart-icon').addEventListener('click', showCart);
+                    Swal.fire({
+                        title: '¡Bienvenido a DON CHODO!',
+                        html: `
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                                <img src="${userProfilePic}" 
+                                     style="width:100px; height:100px; border-radius:50%; margin-bottom:15px;">
+                                <p>${randomSaludo}</p>
+                            </div>
+                        `,
+                        icon: 'success',
+                        confirmButtonText: 'Explorar Tienda',
+                        confirmButtonColor: '#ffa500'
+                    });
+                }
+            }
+        });
     </script>
 </body>
 </html>

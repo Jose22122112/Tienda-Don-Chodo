@@ -121,12 +121,10 @@
 
     <!-- Importar Firebase modular -->
     <script type="module">
-        // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-        // Your web app's Firebase configuration
+    
         const firebaseConfig = {
             apiKey: "AIzaSyDNrS_lhsr_vRdYYDoS0kpFwmdJepA7m_U",
             authDomain: "tiendadonchodo.firebaseapp.com",
@@ -137,38 +135,40 @@
             appId: "1:446103896045:web:8108dfd422b2a1f258b1e4",
             measurementId: "G-DF86E2NKQ5"
         };
-
-        // Initialize Firebase
+    
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const auth = getAuth(app);
-
-        // Make handleGoogleSignIn available globally
+    
         window.handleGoogleSignIn = async function() {
             try {
                 const provider = new GoogleAuthProvider();
                 provider.addScope('https://www.googleapis.com/auth/cloud-platform');
                 
                 const result = await signInWithPopup(auth, provider);
-                const credential = GoogleAuthProvider.credentialFromResult(result);
-                const token = credential.accessToken;
                 const user = result.user;
+                
+                // Extraer primer nombre
+                const firstName = user.displayName.split(' ')[0];
+                
+                // Guardar información del usuario
+                localStorage.setItem('userFirstName', firstName);
+                localStorage.setItem('userProfilePic', user.photoURL || '');
+                localStorage.setItem('userEmail', user.email);
                 
                 console.log('Usuario autenticado:', user);
                 
-                // Aquí puedes redirigir al usuario o hacer lo que necesites
-                alert('¡Inicio de sesión exitoso!');
-                // Por ejemplo, redirigir a la página principal:
-                // window.location.href = 'dashboard.html';
+                // Redirigir a index con parámetro de primer inicio
+                window.location.href = 'index.Html?firstLogin=true';
                 
             } catch (error) {
                 console.error('Error al iniciar sesión:', error);
                 alert('Error al iniciar sesión: ' + error.message);
             }
         };
-
+    
         window.loginWithFacebook = function() {
-            alert('Inicio de sesión con Facebook - Función por implementar');
+            alert('Función de Facebook por implementar');
         };
     </script>
 </body>
