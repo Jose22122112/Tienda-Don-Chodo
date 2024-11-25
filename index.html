@@ -6,6 +6,14 @@
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Ferreteria DON CHODO</title>
+
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Ferreteria DON CHODO</title>
+                <link rel="stylesheet" href="style.css"> <!-- Aquí agregamos el archivo CSS -->
+            </head>
+            
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -334,70 +342,128 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const isFirstLogin = urlParams.get('firstLogin');
-            const userFirstName = localStorage.getItem('userFirstName');
-            const userProfilePic = localStorage.getItem('userProfilePic') || 'https://via.placeholder.com/100';
-            const userEmail = localStorage.getItem('userEmail');
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const isFirstLogin = urlParams.get('firstLogin');
+    const userFirstName = localStorage.getItem('userFirstName');
+    const userProfilePic = localStorage.getItem('userProfilePic') || 'path/to/default/avatar.png';
+    const userEmail = localStorage.getItem('userEmail');
 
-            if (userFirstName) {
-                const loginSection = document.querySelector('nav ul');
-                loginSection.innerHTML = '';
+    const loginSection = document.querySelector('nav ul');
+    const loginArea = document.createElement('li');
+    
+    if (userFirstName) {
+        // Limpiar sección de login y agregar datos del usuario
+        loginSection.innerHTML = '';
+        loginArea.style.display = 'flex';
+        loginArea.style.alignItems = 'center';
+        loginArea.style.gap = '10px';
 
-                const userContainer = document.createElement('li');
-                userContainer.style.display = 'flex';
-                userContainer.style.alignItems = 'center';
-                userContainer.style.gap = '10px';
+        // Inicial del nombre
+        const userInitial = document.createElement('span');
+        userInitial.textContent = userFirstName[0].toUpperCase();
+        userInitial.style.backgroundColor = '#ffa500';
+        userInitial.style.color = 'white';
+        userInitial.style.borderRadius = '50%';
+        userInitial.style.width = '30px';
+        userInitial.style.height = '30px';
+        userInitial.style.display = 'flex';
+        userInitial.style.justifyContent = 'center';
+        userInitial.style.alignItems = 'center';
+        userInitial.style.fontWeight = 'bold';
 
-                const userInitial = document.createElement('span');
-                userInitial.textContent = userFirstName[0].toUpperCase();
-                userInitial.style.backgroundColor = '#ffa500';
-                userInitial.style.color = 'white';
-                userInitial.style.borderRadius = '50%';
-                userInitial.style.width = '30px';
-                userInitial.style.height = '30px';
-                userInitial.style.display = 'flex';
-                userInitial.style.justifyContent = 'center';
-                userInitial.style.alignItems = 'center';
-                userInitial.style.fontWeight = 'bold';
+        // Mostrar nombre del usuario
+        const userLink = document.createElement('a');
+        userLink.href = '#';
+        userLink.textContent = userFirstName;
+        userLink.style.marginLeft = '10px';
 
-                const userLink = document.createElement('a');
-                userLink.href = '#';
-                userLink.textContent = userFirstName;
-                userLink.style.marginLeft = '10px';
+        // Botón de Historial
+        const historyLink = document.createElement('a');
+        historyLink.href = '#';
+        historyLink.textContent = 'Historial de Compras';
+        historyLink.style.marginLeft = '15px';
+        historyLink.style.color = '#ffa500';
+        historyLink.style.textDecoration = 'none';
+        historyLink.addEventListener('click', () => showPurchaseHistory());
 
-                userContainer.appendChild(userInitial);
-                userContainer.appendChild(userLink);
-                loginSection.appendChild(userContainer);
+        // Botón de Cerrar Sesión
+        const logoutButton = document.createElement('button');
+        logoutButton.textContent = 'Cerrar Sesión';
+        logoutButton.style.marginLeft = '15px';
+        logoutButton.style.backgroundColor = '#333';
+        logoutButton.style.color = 'white';
+        logoutButton.style.border = 'none';
+        logoutButton.style.padding = '5px 10px';
+        logoutButton.style.cursor = 'pointer';
+        logoutButton.addEventListener('click', () => logoutUser());
 
-                if (isFirstLogin) {
-                    const saludes = [
-                        `🛠️ ¡Bienvenido a DON CHODO, ${userFirstName}! Tu destino para herramientas de primera.`,
-                        `🔧 ¡Hola ${userFirstName}! Prepárate para transformar tus ideas en realidad.`,
-                        `🏠 ${userFirstName}, estás en el mejor lugar para hacer realidad tus proyectos.`,
-                        `💡 ¡Qué bueno tenerte aquí, ${userFirstName}! Cada herramienta cuenta una historia.`
-                    ];
+        loginArea.appendChild(userInitial);
+        loginArea.appendChild(userLink);
+        loginArea.appendChild(historyLink);
+        loginArea.appendChild(logoutButton);
+        loginSection.appendChild(loginArea);
 
-                    const randomSaludo = saludes[Math.floor(Math.random() * saludes.length)];
+        // Mostrar mensaje de bienvenida si es el primer login
+        if (isFirstLogin) {
+            Swal.fire({
+                title: '¡Bienvenido a DON CHODO!',
+                html: `
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <img src="${userProfilePic}" style="width:100px; height:100px; border-radius:50%; margin-bottom:15px;">
+                        <p>🛠️ ¡Hola ${userFirstName}! Explora nuestras herramientas de primera calidad.</p>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonText: 'Explorar Tienda',
+                confirmButtonColor: '#ffa500',
+            });
+        }
+    } else {
+        // Mostrar opciones de iniciar sesión
+        loginSection.innerHTML = `
+            <li><a href="Login1.Html">Iniciar sesión/Registrar</a></li>
+        `;
+    }
 
-                    Swal.fire({
-                        title: '¡Bienvenido a DON CHODO!',
-                        html: `
-                            <div style="display:flex; flex-direction:column; align-items:center;">
-                                <img src="${userProfilePic}" 
-                                     style="width:100px; height:100px; border-radius:50%; margin-bottom:15px;">
-                                <p>${randomSaludo}</p>
-                            </div>
-                        `,
-                        icon: 'success',
-                        confirmButtonText: 'Explorar Tienda',
-                        confirmButtonColor: '#ffa500'
-                    });
-                }
-            }
+    // Función para cerrar sesión
+    function logoutUser() {
+        localStorage.clear();
+        Swal.fire({
+            title: 'Cerraste sesión',
+            text: 'Tu sesión se ha cerrado correctamente.',
+            icon: 'info',
+            confirmButtonText: 'Aceptar',
+        }).then(() => {
+            window.location.reload();
         });
-    </script>
+    }
+
+    // Función para mostrar el historial de compras
+    function showPurchaseHistory() {
+        const purchaseHistory = JSON.parse(localStorage.getItem('purchaseHistory')) || [];
+        if (purchaseHistory.length > 0) {
+            const historyHtml = purchaseHistory
+                .map(item => `<p>${item.product} - $${item.price.toFixed(2)}</p>`)
+                .join('');
+            Swal.fire({
+                title: 'Historial de Compras',
+                html: historyHtml,
+                icon: 'info',
+                confirmButtonText: 'Cerrar',
+            });
+        } else {
+            Swal.fire({
+                title: 'Historial de Compras',
+                text: 'No tienes compras registradas aún.',
+                icon: 'info',
+                confirmButtonText: 'Cerrar',
+            });
+        }
+    }
+});
+</script>
+
 </body>
 </html>
