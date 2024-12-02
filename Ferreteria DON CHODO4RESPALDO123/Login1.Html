@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Ferreteria DON CHODO</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f56b23, #f5a623);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            width: 400px;
+            max-width: 100%;
+            padding: 2rem;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-header h1 {
+            color: #f56b23;
+            margin: 0;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 1rem;
+            border: none;
+            border-bottom: 2px solid #f56b23;
+            background-color: transparent;
+            transition: border-color 0.3s;
+        }
+        .login-form input:focus {
+            outline: none;
+            border-color: #f5a623;
+        }
+        .login-form button, .social-login button {
+            width: 100%;
+            padding: 10px;
+            background-color: #f56b23;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 1rem;
+        }
+        .login-form button:hover, .social-login button:hover {
+            background-color: #f5a623;
+        }
+        .login-footer, .social-login {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .login-footer a, .social-login a {
+            color: #f56b23;
+            text-decoration: none;
+        }
+        .login-footer a:hover, .social-login a:hover {
+            text-decoration: underline;
+        }
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .social-login button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ccc;
+        }
+        .social-login button img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        .social-login p {
+            margin-bottom: 1rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <div class="tool-icon">🛠️</div>
+            <h1>Iniciar Sesión en DON CHODO</h1>
+        </div>
+        <form class="login-form" id="loginForm">
+            <input type="email" id="email" placeholder="Correo electrónico" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        <div class="social-login">
+            <p>O inicia sesión con</p>
+            <button onclick="handleGoogleSignIn()">
+                <img src="https://www.google.com/favicon.ico" alt="Google logo"> Google
+            </button>
+            <button onclick="loginWithGitHub()">
+                <img src="https://github.githubassets.com/favicons/favicon.png" alt="GitHub logo"> GitHub
+            </button>
+        </div>
+        <div class="login-footer">
+            <p>¿No tienes una cuenta? <a href="registro.html">Regístrate</a></p>
+            <p><a href="#">¿Olvidaste tu contraseña?</a></p>
+        </div>
+    </div>
+
+    <!-- Importar Firebase modular -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, GithubAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDNrS_lhsr_vRdYYDoS0kpFwmdJepA7m_U",
+            authDomain: "tiendadonchodo.firebaseapp.com",
+            databaseURL: "https://tiendadonchodo-default-rtdb.firebaseio.com",
+            projectId: "tiendadonchodo",
+            storageBucket: "tiendadonchodo.firebasestorage.app",
+            messagingSenderId: "446103896045",
+            appId: "1:446103896045:web:8108dfd422b2a1f258b1e4",
+            measurementId: "G-DF86E2NKQ5"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+
+        // Funciones de autenticación
+        window.handleGoogleSignIn = async function() {
+            try {
+                const provider = new GoogleAuthProvider();
+                provider.addScope('https://www.googleapis.com/auth/cloud-platform');
+
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+
+                const firstName = user.displayName ? user.displayName.split(' ')[0] : 'Usuario';
+
+                localStorage.setItem('userFirstName', firstName);
+                localStorage.setItem('userProfilePic', user.photoURL || '');
+                localStorage.setItem('userEmail', user.email);
+
+                console.log('Usuario autenticado:', user);
+
+                window.location.href = 'index.html?firstLogin=true';
+
+            } catch (error) {
+                console.error('Error al iniciar sesión:', error);
+                alert('Error al iniciar sesión: ' + error.message);
+            }
+        };
+
+        window.loginWithGitHub = async function() {
+            try {
+                const provider = new GithubAuthProvider();
+                provider.addScope('user:email');
+
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+
+                const firstName = user.displayName ? user.displayName.split(' ')[0] : 'Usuario';
+
+                localStorage.setItem('userFirstName', firstName);
+                localStorage.setItem('userProfilePic', user.photoURL || '');
+                localStorage.setItem('userEmail', user.email);
+
+                console.log('Usuario autenticado con GitHub:', user);
+
+                window.location.href = 'index.html?firstLogin=true';
+
+            } catch (error) {
+                console.error('Error al iniciar sesión con GitHub:', error);
+                alert('Error al iniciar sesión: ' + error.message);
+            }
+        };
+
+        // Manejador de eventos para el formulario de inicio de sesión
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (email === 'Admin@Chodo.com' && password === '123456789') {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

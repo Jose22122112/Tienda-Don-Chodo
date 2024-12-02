@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Verificación de Captcha</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .captcha-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+        }
+        .math-captcha {
+            font-size: 24px;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+        #captcha-input {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        #submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        #terms-content {
+            display: none;
+            text-align: left;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="captcha-container">
+        <div id="captcha-section">
+            <h2>Verificación Humana</h2>
+            <div class="math-captcha" id="math-challenge"></div>
+            <input type="text" id="captcha-input" placeholder="Escribe la respuesta" autocomplete="off">
+            <button id="submit-btn" disabled>Verificar</button>
+            <div id="error-message"></div>
+        </div>
+
+        <div id="terms-content">
+            <!-- El contenido de términos y condiciones se cargará aquí -->
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let num1, num2, correctAnswer;
+        const captchaSection = document.getElementById('captcha-section');
+        const termsContent = document.getElementById('terms-content');
+        const mathChallenge = document.getElementById('math-challenge');
+        const captchaInput = document.getElementById('captcha-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const errorMessage = document.getElementById('error-message');
+
+        // Generar desafío matemático
+        function generateMathCaptcha() {
+            num1 = Math.floor(Math.random() * 10) + 1;
+            num2 = Math.floor(Math.random() * 10) + 1;
+            correctAnswer = num1 + num2;
+
+            mathChallenge.textContent = `${num1} + ${num2} = ?`;
+            captchaInput.value = '';
+            submitBtn.disabled = true;
+            errorMessage.textContent = '';
+        }
+
+        // Validar entrada del captcha
+        captchaInput.addEventListener('input', function() {
+            submitBtn.disabled = this.value.trim() === '';
+        });
+
+        // Verificar respuesta del captcha
+        submitBtn.addEventListener('click', function() {
+            const userAnswer = parseInt(captchaInput.value.trim());
+
+            if (userAnswer === correctAnswer) {
+                // Cargar términos y condiciones
+                fetch('terminos.html')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('No se pudo cargar los términos y condiciones');
+                        }
+                        return response.text();
+                    })
+                    .then(html => {
+                        // Ocultar sección de captcha
+                        captchaSection.style.display = 'none';
+
+                        // Mostrar términos y condiciones
+                        termsContent.innerHTML = html;
+                        termsContent.style.display = 'block';
+                    })
+                    .catch(error => {
+                        errorMessage.textContent = 'Error al cargar los términos: ' + error.message;
+                    });
+            } else {
+                errorMessage.textContent = 'Respuesta incorrecta. Intenta de nuevo.';
+                generateMathCaptcha();
+            }
+        });
+
+        // Inicializar captcha al cargar la página
+        generateMathCaptcha();
+    </script>
+</body>
+</html>

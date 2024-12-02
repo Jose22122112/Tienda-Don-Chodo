@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagar - Ferreteria DON CHODO</title>
+    <link rel="stylesheet" href="https://tienda-don-chodo.vercel.app/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .payment-methods {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .payment-method {
+            text-align: center;
+            cursor: pointer;
+        }
+        .payment-method img {
+            width: 100px;
+            height: auto;
+        }
+        .payment-form {
+            display: none;
+        }
+        .payment-form.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group button {
+            background-color: #ffa500;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .captcha-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 300px;
+            margin: 20px auto;
+            display: none;
+        }
+        .math-captcha {
+            font-size: 24px;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+        #captcha-input {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        #submit-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Selecciona tu método de pago</h2>
+        <div class="payment-methods">
+            <div class="payment-method" onclick="showPaymentForm('credit-card')">
+                <img src="Img/Targeta1.jpg" alt="Tarjeta de Crédito">
+                <p>Tarjeta de Crédito</p>
+            </div>
+            <div class="payment-method" onclick="showPaymentForm('yape')">
+                <img src="Img/YAPE.png" alt="Yape">
+                <p>Yape</p>
+            </div>
+            <div class="payment-method" onclick="showPaymentForm('other')">
+                <img src="Img/PagoMetodo.jpg" alt="Otros Métodos">
+                <p>Otros Métodos</p>
+            </div>
+        </div>
+
+        <div id="credit-card" class="payment-form">
+            <h3>Pago con Tarjeta de Crédito</h3>
+            <div class="form-group">
+                <label for="card-number">Número de Tarjeta</label>
+                <input type="text" id="card-number" placeholder="1234 5678 9012 3456">
+            </div>
+            <div class="form-group">
+                <label for="card-holder">Titular de la Tarjeta</label>
+                <input type="text" id="card-holder" placeholder="Nombre del Titular">
+            </div>
+            <div class="form-group">
+                <label for="expiration-date">Fecha de Vencimiento</label>
+                <input type="text" id="expiration-date" placeholder="MM/YY">
+            </div>
+            <div class="form-group">
+                <label for="cvv">CVV</label>
+                <input type="text" id="cvv" placeholder="123">
+            </div>
+        </div>
+
+        <div id="yape" class="payment-form">
+            <h3>Pago con Yape</h3>
+            <div class="form-group">
+                <label for="yape-number">Número de Yape</label>
+                <input type="text" id="yape-number" placeholder="987654321">
+            </div>
+        </div>
+
+        <div id="other" class="payment-form">
+            <h3>Otros Métodos de Pago</h3>
+            <div class="form-group">
+                <label for="other-details">Detalles del Pago</label>
+                <input type="text" id="other-details" placeholder="Detalles del pago">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="checkbox" id="terms-checkbox">
+            <label for="terms-checkbox">Acepto los <a href="termino.html" target="_blank">términos y condiciones</a></label>
+        </div>
+
+        <div class="captcha-container" id="captcha-container">
+            <div id="captcha-section">
+                <h2>Verificación Humana</h2>
+                <div class="math-captcha" id="math-challenge"></div>
+                <input type="text" id="captcha-input" placeholder="Escribe la respuesta" autocomplete="off">
+                <button id="submit-btn" disabled>Verificar</button>
+                <div id="error-message"></div>
+            </div>
+        </div>
+
+        <div class="form-group" id="proceed-section" style="display: none;">
+            <button id="proceed-btn" disabled>Proceder con la Compra</button>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let num1, num2, correctAnswer;
+        const captchaSection = document.getElementById('captcha-section');
+        const captchaContainer = document.getElementById('captcha-container');
+        const mathChallenge = document.getElementById('math-challenge');
+        const captchaInput = document.getElementById('captcha-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const errorMessage = document.getElementById('error-message');
+        const termsCheckbox = document.getElementById('terms-checkbox');
+        const proceedBtn = document.getElementById('proceed-btn');
+        const proceedSection = document.getElementById('proceed-section');
+
+        // Generar desafío matemático
+        function generateMathCaptcha() {
+            num1 = Math.floor(Math.random() * 10) + 1;
+            num2 = Math.floor(Math.random() * 10) + 1;
+            correctAnswer = num1 + num2;
+
+            mathChallenge.textContent = `${num1} + ${num2} = ?`;
+            captchaInput.value = '';
+            submitBtn.disabled = true;
+            errorMessage.textContent = '';
+        }
+
+        // Validar entrada del captcha
+        captchaInput.addEventListener('input', function() {
+            submitBtn.disabled = this.value.trim() === '';
+        });
+
+        // Verificar respuesta del captcha
+        submitBtn.addEventListener('click', function() {
+            const userAnswer = parseInt(captchaInput.value.trim());
+
+            if (userAnswer === correctAnswer) {
+                proceedBtn.disabled = false;
+                proceedSection.style.display = 'block';
+            } else {
+                errorMessage.textContent = 'Respuesta incorrecta. Intenta de nuevo.';
+                generateMathCaptcha();
+            }
+        });
+
+        // Mostrar captcha cuando se aceptan los términos y condiciones
+        termsCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                captchaContainer.style.display = 'block';
+                generateMathCaptcha();
+            } else {
+                captchaContainer.style.display = 'none';
+                proceedBtn.disabled = true;
+                proceedSection.style.display = 'none';
+            }
+        });
+
+        // Mostrar el formulario de pago seleccionado
+        function showPaymentForm(method) {
+            document.querySelectorAll('.payment-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            document.getElementById(method).classList.add('active');
+            proceedSection.style.display = 'block';
+        }
+
+        // Procesar el pago
+        function processPayment(method) {
+            alert(`Procesando pago con ${method}`);
+            // Aquí puedes agregar la lógica para procesar el pago
+        }
+
+        // Inicializar captcha al cargar la página
+        generateMathCaptcha();
+    </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferreteria DON CHODO</title>
+    <link rel="stylesheet" href="https://tienda-don-chodo.vercel.app/style.css">
+    <link rel="icon" type="image/png" href="https://tienda-don-chodo.vercel.app/favicon.png">
+    <style>
+        /* Estilos existentes */
+        .cart-icon {
+            cursor: pointer;
+        }
+
+        /* Nuevos estilos para el logo y el texto */
+        .header-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-img img {
+            width: 50px; /* Ajusta el tamaño del logo según tus necesidades */
+            height: auto;
+            margin-right: 10px; /* Espacio entre el logo y el texto */
+        }
+
+        .logo {
+            font-size: 24px; /* Ajusta el tamaño del texto según tus necesidades */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-container">
+                    <div class="logo-img">
+                        <img src="Img/logo02.jpg" alt="Don Chodo Logo">
+                    </div>
+                    <div class="logo">Ferreteria DON CHODO</div>
+                </div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Buscar..." aria-label="Buscar productos">
+                </div>
+                <nav>
+                    <ul id="login-section">
+                        <li><a href="Login1.Html">Iniciar sesión/Registrar</a></li>
+                        <li><a href="#" id="account-link">Mi cuenta</a></li>
+                    </ul>
+                </nav>
+                <div class="cart-icon" id="cart-icon" aria-label="Carrito de compras" onclick="openCart()">
+                    🛒
+                    <span class="cart-count" id="cart-count">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="categories">
+        <div class="container">
+            <ul>
+                <li><a href="#brands">Marcas</a></li>
+                <li><a href="#tools">Herramientas</a></li>
+                <li><a href="#electricity">Electricidad</a></li>
+                <li><a href="#plumbing">Plomería</a></li>
+                <li><a href="#painting">Pintura</a></li>
+                <li><a href="#gardening">Jardín</a></li>
+                <li><a href="catalogo.html">Catálogo de Productos</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="welcome-message" id="welcome-message" style="display: none;">
+            <img id="user-profile-pic" src="" alt="User Profile Picture">
+            <p id="welcome-text"></p>
+        </div>
+
+        <!-- Contenido existente -->
+
+        <h2>Catálogo de Productos</h2>
+        <div class="catalog" id="catalog">
+            <!-- Productos dinámicos -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <p>Dirección: Calle Principal 123</p>
+                    <p>Teléfono: +51916887785</p>
+                    <p>Email: info@donchodo.com</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces rápidos</h3>
+                    <ul>
+                        <li><a href="#">Sobre nosotros</a></li>
+                        <li><a href="terminos.html">Términos y condiciones</a></li>
+                        <li><a href="#">Política de privacidad</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Síguenos</h3>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Facebook">📘</a>
+                        <a href="#" aria-label="Twitter">🐦</a>
+                        <a href="#" aria-label="Instagram">📷</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="cart-modal">
+        <div class="cart-content">
+            <h2>Carrito de Compras</h2>
+            <div id="cart-items"></div>
+            <p>Total: $<span id="cart-total">0.00</span></p>
+            <button onclick="closeCart()">Cerrar</button>
+            <button onclick="window.location.href='pagar.html'">Pagar</button>
+        </div>
+    </div>
+
+    <div id="product-modal">
+        <div class="product-modal-content">
+            <h2 id="product-modal-title"></h2>
+            <img id="product-modal-image" alt="Product Image">
+            <p id="product-modal-description"></p>
+            <p id="product-modal-price"></p>
+            <button onclick="addToCartFromModal()">Agregar al carrito</button>
+            <button onclick="closeProductModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="scripts.js"></script>
+</body>
+</html>

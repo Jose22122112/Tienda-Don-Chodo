@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 60px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background-color: #1a2234;
+            color: white;
+            padding: 1rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .sidebar-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-icon:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-icon.active {
+            background-color: #40e0d0;
+            color: #1a2234;
+        }
+
+        .main-content {
+            background-color: #f5f6fa;
+            padding: 1rem;
+        }
+
+        .navbar {
+            background-color: white;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            background-color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .nav-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab:hover {
+            background-color: #f5f6fa;
+        }
+
+        .nav-tab.active {
+            background-color: #40e0d0;
+            color: white;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .metric-card {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .metric-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visits-icon { background-color: #40e0d0; }
+        .messages-icon { background-color: #3498db; }
+        .purchases-icon { background-color: #ff6b81; }
+        .shopping-icon { background-color: #40e0d0; }
+
+        .chart-container {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropbtn {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropbtn:hover {
+            background-color: #f5f6fa;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+            border-radius: 8px;
+        }
+
+        .show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="sidebar-icon active">
+                <i class="fas fa-home"></i>
+            </div>
+            <div class="sidebar-icon">
+                <i class="fas fa-file"></i>
+            </div>
+            <div class="sidebar-icon">
+                <i class="fas fa-paper-plane"></i>
+            </div>
+            <div class="sidebar-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <div class="sidebar-icon">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div class="sidebar-icon">
+                <i class="fas fa-th"></i>
+            </div>
+            <div class="sidebar-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="sidebar-icon">
+                <i class="fas fa-cog"></i>
+            </div>
+            <div class="sidebar-icon">
+                <i class="fas fa-folder"></i>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="navbar">
+                <h2>Panel de control</h2>
+                <div class="dropdown">
+                    <button onclick="toggleDropdown()" class="dropbtn">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <div id="myDropdown" class="dropdown-content">
+                        <a href="#"><i class="fas fa-user"></i> Profile</a>
+                        <a href="#"><i class="fas fa-tachometer-alt"></i> Panel de control</a>
+                        <a href="#"><i class="fab fa-github"></i> Github</a>
+                        <a href="#"><i class="fas fa-book"></i> Docs</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Salir</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-tabs">
+                <div class="nav-tab active">Panel de control</div>
+                <div class="nav-tab">Documentación</div>
+                <div class="nav-tab">Guía</div>
+                <div class="nav-tab">Keyboard Chart</div>
+                <div class="nav-tab">Gráfico de líneas</div>
+                <div class="nav-tab">Tabla dinámica</div>
+                <div class="nav-tab">Arrastrar tabla</div>
+                <div class="nav-tab">Editor</div>
+            </div>
+
+            <div class="metrics">
+                <div class="metric-card">
+                    <div class="metric-icon visits-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        <div>New Visits</div>
+                        <h3>102,400</h3>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon messages-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div>
+                        <div>Messages</div>
+                        <h3>81,212</h3>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon purchases-icon">
+                        <i class="fas fa-yen-sign"></i>
+                    </div>
+                    <div>
+                        <div>Purchases</div>
+                        <h3>9,280</h3>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-icon shopping-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div>
+                        <div>Shoppings</div>
+                        <h3>13,600</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dropdown functionality
+        function toggleDropdown() {
+            document.getElementById("myDropdown").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn') && !event.target.matches('.fa-ellipsis-v')) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
+        // Tab functionality
+        const tabs = document.querySelectorAll('.nav-tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+            });
+        });
+
+        // Sidebar functionality
+        const sidebarIcons = document.querySelectorAll('.sidebar-icon');
+        sidebarIcons.forEach(icon => {
+            icon.addEventListener('click', () => {
+                sidebarIcons.forEach(i => i.classList.remove('active'));
+                icon.classList.add('active');
+            });
+        });
+
+        // Chart functionality
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Expected',
+                    data: [190, 185, 160, 120, 130, 160, 140],
+                    borderColor: '#ff6b81',
+                    tension: 0.4
+                },
+                {
+                    label: 'Actual',
+                    data: [170, 160, 155, 140, 110, 140, 130],
+                    borderColor: '#3498db',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(event) {
+            event.preventDefault();
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
